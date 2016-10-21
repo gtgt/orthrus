@@ -1,6 +1,6 @@
 {
-  "name": "meanjs",
-  "description": "Fullstack JavaScript with MongoDB, Express, AngularJS, and Node.js.",
+  "name": "orthrus",
+  "description": "Orthrus, the door guard",
   "homepage": "http://meanjs.org/",
   "license": "MIT",
   "dependencies": {

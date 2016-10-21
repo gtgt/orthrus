@@ -36,7 +36,7 @@ module.exports = {
     'no-unused-vars': 0,
     'no-use-before-define': [1, 'nofunc'],
     'no-var': 0,
-    'object-curly-spacing': [2, 'always'],
+    'object-curly-spacing': [0, 'always'],
     'one-var': [0, 'never'],
     'one-var-declaration-per-line': [2, 'always'],
     'padded-blocks': 0,

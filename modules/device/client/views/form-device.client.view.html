@@ -1,0 +1,44 @@
+<section>
+  <div class="page-header">
+    <h1>{{vm.device._id ? 'Edit Device' : 'New Device'}}</h1>
+  </div>
+  <div class="pull-right">
+    <a ng-show="vm.device._id" class="btn btn-primary" ng-click="vm.remove()">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </div>
+  <div class="col-md-12">
+    <form name="vm.form.deviceForm" class="form-horizontal" ng-submit="vm.save(vm.form.deviceForm.$valid)" novalidate>
+      <fieldset>
+        <div class="form-group" show-errors>
+          <label class="control-label" for="title">Title</label>
+          <input name="title" type="text" ng-model="vm.device.title" id="title" class="form-control" placeholder="Title" required>
+          <div ng-messages="vm.form.deviceForm.title.$error" role="alert">
+            <p class="help-block error-text" ng-message="required">Device title is required.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="kind">Kind</label>
+          <select name="kind" ng-model="vm.device.kind" id="kind" class="form-control">
+            <option value="auth">Authentication (nfc/rf/chip readers, buttons, bluetooth)</option>
+            <option value="control">Control (relay, servo)</option>
+            <option value="display">Display (lcd, led, buzzer)</option>
+          </select>
+        </div>
+        <div class="form-group" ng-if="vm.device.kind">
+          <label class="control-label" for="type">Type</label>
+          <select name="type" data-ng-model="vm.device.type" id="type" class="form-control">
+            <option ng-repeat="type in vm.types" ng-value="type.name" ng-bind="type.label" ng-selected="vm.device.type == type.name"></option>
+          </select>
+        </div>
+        {{vm.params}}
+        <div class="form-group">
+          <button type="submit" class="btn btn-default">{{vm.device._id ? 'Update' : 'Create'}}</button>
+        </div>
+        <div ng-show="vm.error" class="text-danger">
+          <strong ng-bind="vm.error"></strong>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</section>

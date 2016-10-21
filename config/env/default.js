@@ -2,9 +2,9 @@
 
 module.exports = {
   app: {
-    title: 'MEAN.JS',
-    description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',
-    keywords: 'mongodb, express, angularjs, node.js, mongoose, passport',
+    title: 'Othrus',
+    description: 'Othrus, the door guard',
+    keywords: 'orthrus, door, guard, mongodb, express, angularjs, node.js, mongoose, passport',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || 'GOOGLE_ANALYTICS_TRACKING_ID'
   },
   port: process.env.PORT || 3000,
@@ -51,9 +51,9 @@ module.exports = {
     owasp: {
       allowPassphrases: true,
       maxLength: 128,
-      minLength: 10,
+      minLength: 6,
       minPhraseLength: 20,
-      minOptionalTestsToPass: 4
+      minOptionalTestsToPass: 1
     }
   }
 

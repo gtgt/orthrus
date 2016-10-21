@@ -1,0 +1,26 @@
+<section>
+  <div class="page-header">
+    <h1>
+      Device
+      <a class="btn btn-primary pull-right" data-ui-sref="device.create">
+        <i class="glyphicon glyphicon-plus"></i>
+      </a>
+    </h1>
+  </div>
+  <div class="list-group">
+    <a data-ng-repeat="device in vm.device" data-ui-sref="device.edit({deviceId: device._id})" class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span data-ng-bind="device.created | date:'mediumDate'"></span>
+        by
+        <span ng-if="device.user" ng-bind="device.user.displayName"></span>
+        <span ng-if="!device.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" data-ng-bind="device.title"></h4>
+      <p class="list-group-item-text" data-ng-bind="device.content"></p>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" data-ng-if="device.$resolved && !device.length">
+    No device yet, why don't you <a data-ui-sref="device.create">create one</a>?
+  </div>
+</section>
