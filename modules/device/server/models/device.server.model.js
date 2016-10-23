@@ -26,10 +26,14 @@ var DeviceSchema = new Schema({
       return _.findIndex(['auth', 'control', 'display'], val);
     }, 'This could be only auth, control or display']
   },
-  type: {
+  driver: {
     type: String,
     default: '',
     index: true
+  },
+  params: {
+    type: Object,
+    default: {}
   },
   created: {
     type: Date,

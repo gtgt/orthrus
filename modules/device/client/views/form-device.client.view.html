@@ -1,6 +1,6 @@
 <section>
   <div class="page-header">
-    <h1>{{vm.device._id ? 'Edit Device' : 'New Device'}}</h1>
+    <h1 ng-bind="vm.device._id ? 'Edit Device' : 'New Device'"></h1>
   </div>
   <div class="pull-right">
     <a ng-show="vm.device._id" class="btn btn-primary" ng-click="vm.remove()">
@@ -25,15 +25,25 @@
             <option value="display">Display (lcd, led, buzzer)</option>
           </select>
         </div>
-        <div class="form-group" ng-if="vm.device.kind">
-          <label class="control-label" for="type">Type</label>
-          <select name="type" data-ng-model="vm.device.type" id="type" class="form-control">
-            <option ng-repeat="type in vm.types" ng-value="type.name" ng-bind="type.label" ng-selected="vm.device.type == type.name"></option>
+        <div class="form-group" ng-if="vm.device.kind" ng-if="vm.drivers">
+          <label class="control-label" for="driver">Driver</label>
+          <select name="driver" data-ng-model="vm.device.driver" id="driver" class="form-control" ng-if="vm.drivers">
+            <option value=""></option>
+            <option ng-repeat="driver in vm.drivers" ng-value="driver.name" ng-bind="driver.label" ng-selected="vm.device.driver == driver.name"></option>
           </select>
         </div>
-        {{vm.params}}
+        <div ng-repeat="param in vm.params">
+          <div class="form-group" show-errors>
+            <!--suppress XmlInvalidId -->
+            <label class="control-label" for="{{param.name}}" ng-bind="param.label"></label>
+            <input name="{{param.name}}" type="text" ng-model="vm.device.params[param.name]" ng-id="title" class="form-control" placeholder="{{param.default}}" required>
+            <div ng-if="param.required" ng-messages="vm.form.deviceForm[param.name].$error" role="alert">
+              <p class="help-block error-text" ng-message="required" ng-bind="!_.isBool(param.required) ? param.required : 'This field is required.'"></p>
+            </div>
+          </div>
+        </div>
         <div class="form-group">
-          <button type="submit" class="btn btn-default">{{vm.device._id ? 'Update' : 'Create'}}</button>
+          <button type="submit" class="btn btn-default" ng-bind="vm.device._id ? 'Update' : 'Create'"></button>
         </div>
         <div ng-show="vm.error" class="text-danger">
           <strong ng-bind="vm.error"></strong>

@@ -21,13 +21,10 @@ exports.invokeRolesPolicies = function () {
       resources: '/api/device/:deviceId',
       permissions: '*'
     }, {
-      resources: '/api/device/type/:kind/',
+      resources: '/api/device/driver/',
       permissions: '*'
     }, {
-      resources: '/api/device/type/:kind/:name/',
-      permissions: '*'
-    }, {
-      resources: '/api/device/type/:kind/:name/params',
+      resources: '/api/device/driver/:driverName/',
       permissions: '*'
     }]
   }, {

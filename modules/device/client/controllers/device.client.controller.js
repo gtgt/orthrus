@@ -8,13 +8,14 @@
 
     vm.device = DeviceService.query();
   }])
-  .controller('DeviceEditController', ['$scope', '$state', '$window', 'deviceResolve', 'Authentication', 'DeviceTypeListService', 'DeviceTypeService', function($scope, $state, $window, device, Authentication, DeviceTypeListService, DeviceTypeService) {
+  .controller('DeviceEditController', ['$scope', '$state', '$window', 'deviceResolve', 'Authentication', 'DeviceDriverService', function($scope, $state, $window, device, Authentication, DeviceDriverService) {
     var vm = this;
 
     vm.device = device;
     vm.authentication = Authentication;
     vm.error = null;
     vm.form = {};
+    vm.params = [];
     vm.remove = remove;
     vm.save = save;
 
@@ -47,23 +48,25 @@
         vm.error = res.data.message;
       }
     }
-
-    $scope.$watch('vm.device.kind', function(kind, oldKind) {
-      if (kind !== oldKind || (kind && !vm.types)) {
-        DeviceTypeListService.query({ kind: kind }, function(types) {
-          vm.types = types;
-        });
-      }
-    });
-
-    $scope.$watch('vm.device.type', function(type, oldType) {
-      if (type !== oldType || (type && !vm.params)) {
-        DeviceTypeService.get({ kind: vm.device.kind, name: type }, function(type) {
-          type.params().get(function(params) {
-            vm.params = params;
-          });
-        });
-      }
+    DeviceDriverService.query({}, function(data) {
+      vm._drivers = data;
+      $scope.$watch('vm.device.kind', function(kind, oldKind) {
+        if ((kind !== oldKind || (kind && !vm.drivers)) && vm._drivers) {
+          vm.drivers = _.filter(vm._drivers, {kind: kind});
+          if (vm.device.driver) {
+            var driver = _.find(vm.drivers, {name: vm.device.driver});
+            vm.params = driver ? driver.params : [];
+          }
+        }
+      });
+      $scope.$watch('vm.device.driver', function(driver, oldDriver) {
+        if (driver && ((driver !== oldDriver) || !vm.params)) {
+          var _driver = _.find(vm.drivers, {name: driver});
+          vm.params = _driver ? _driver.params : [];
+        } else if (!driver) {
+          vm.params = [];
+        }
+      });
     });
   }]);
 }());

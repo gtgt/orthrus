@@ -3,62 +3,69 @@
 /**
  * Module dependencies
  */
-var path = require('path'),
+var _ = require('lodash'),
+  path = require('path'),
   mongoose = require('mongoose'),
   Device = mongoose.model('Device'),
-  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
+  errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
+  drivers = require(path.resolve('./drivers'));
+
+exports.driver = {};
 
 /**
  * Device middleware
  */
-exports.kind = function (req, res, next, id) {
-  req.kind = id;
+exports.kind = function (req, res, next, name) {
+  if (!_.hasIn(name, drivers.kinds)) {
+    return res.status(400).send({
+      message: 'Invalid driver kind.'
+    });
+  }
+  req.kind = name;
   next();
 };
 
-exports.type = {};
 /**
- * List of Device types
+ * Device middleware
  */
-exports.type.list = function (req, res) {
-  var types = [];
-  if (req.params.kind === 'auth') {
-    types.push({ name: 'pn532', label: 'pn532 NFC reader', kind: req.params.kind });
-    types.push({ name: 'bluetooth', label: 'BlueZ bluetooth controller', kind: req.params.kind });
-  } else if (req.params.kind === 'control') {
-    types.push({ name: 'gpio-relay', label: 'Simple GPIO Relay', kind: req.params.kind });
-  } else if (req.params.kind === 'display') {
-    types.push({ name: 'lcd-16x2-i2c', label: '16x2 LCD with i2c protocol', kind: req.params.kind });
+exports.driver.byName = function (req, res, next, name) {
+  if (!drivers[name]) {
+    return res.status(400).send({
+      message: 'Invalid driver name.'
+    });
   }
-  res.json(types);
+  req.driver = drivers[name];
+  next();
+};
+
+exports.driver.read = function (req, res) {
+  res.json(req.driver ? req.driver : {});
 };
 
 /**
- * Get Device Type params
+ * List of Device drivers
  */
-exports.type.get = function (req, res) {
-  res.json({name: req.params.name, kind: req.params.kind, version: '1.0'});
-};
-
-/**
- * Get Device Type params
- */
-exports.type.params = function (req, res) {
-  res.json({
-    param1: {
-      type: String,
-      default: '',
-      trim: true,
-      required: 'Title cannot be blank',
-      unique: true
-    }
+exports.driver.list = function (req, res) {
+  var _drivers = _.map(_.pickBy(drivers, function(value, key) {
+    return value.kind && value.name;
+  }), function(driver) {
+    var _driver = _.pickBy(driver, function(value) {
+      return !_.isFunction(value);
+    });
+    _driver.params = _.map(_driver.params, function(param, name) {
+      param.name = name;
+      return param;
+    });
+    return _driver;
   });
+  res.json(_drivers);
 };
+
 
 /**
  * Device middleware
  */
-exports.get = function (req, res, next, id) {
+exports.byId = function (req, res, next, id) {
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
@@ -80,6 +87,20 @@ exports.get = function (req, res, next, id) {
 };
 
 /**
+ * Show the current device
+ */
+exports.read = function (req, res) {
+  // convert mongoose document to JSON
+  var device = req.device ? req.device.toJSON() : {};
+
+  // Add a custom field to the Device, for determining if the current User is the "owner".
+  // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Device model.
+  device.isCurrentUserOwner = !!(req.user && device.user && device.user._id.toString() === req.user._id.toString());
+
+  res.json(device);
+};
+
+/**
  * Create an device
  */
 exports.create = function (req, res) {
@@ -98,27 +119,13 @@ exports.create = function (req, res) {
 };
 
 /**
- * Show the current device
- */
-exports.read = function (req, res) {
-  // convert mongoose document to JSON
-  var device = req.device ? req.device.toJSON() : {};
-
-  // Add a custom field to the Device, for determining if the current User is the "owner".
-  // NOTE: This field is NOT persisted to the database, since it doesn't exist in the Device model.
-  device.isCurrentUserOwner = !!(req.user && device.user && device.user._id.toString() === req.user._id.toString());
-
-  res.json(device);
-};
-
-/**
  * Update an device
  */
 exports.update = function (req, res) {
   var device = req.device;
-
-  device.title = req.body.title;
-  device.content = req.body.content;
+  Device.schema.eachPath(function(key) {
+    if (_.has(req.body, key)) _.set(device, key, req.body[key]);
+  });
 
   device.save(function (err) {
     if (err) {

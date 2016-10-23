@@ -14,6 +14,7 @@ module.exports = {
       ],
       js: [
         // bower:js
+        'public/lib/lodash/dist/lodash.min.js',
         'public/lib/angular/angular.js',
         'public/lib/angular-animate/angular-animate.js',
         'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
@@ -41,7 +42,7 @@ module.exports = {
       'modules/core/client/app/config.js',
       'modules/core/client/app/init.js',
       'modules/*/client/*.js',
-      'modules/*/client/**/*.js'
+      'modules/*/client/**/*.js',
     ],
     img: [
       'modules/**/*/img/**/*.jpg',
@@ -55,7 +56,7 @@ module.exports = {
   server: {
     gruntConfig: ['gruntfile.js'],
     gulpConfig: ['gulpfile.js'],
-    allJS: ['server.js', 'config/**/*.js', 'modules/*/server/**/*.js'],
+    allJS: ['server.js', 'config/**/*.js', 'modules/*/server/**/*.js', 'drivers/**/*.js'],
     models: 'modules/*/server/models/**/*.js',
     routes: ['modules/!(core)/server/routes/**/*.js', 'modules/core/server/routes/**/*.js'],
     sockets: 'modules/*/server/sockets/**/*.js',
