@@ -34,7 +34,7 @@
         $scope.$broadcast('show-errors-check-validity', 'vm.form.deviceForm');
         return false;
       }
-
+      vm.device.params = _.pick(vm.device.params, _.map(vm.params, 'name'));
       // Create a new device, or update the current instance
       vm.device.createOrUpdate()
         .then(successCallback)
@@ -63,6 +63,11 @@
         if (driver && ((driver !== oldDriver) || !vm.params)) {
           var _driver = _.find(vm.drivers, {name: driver});
           vm.params = _driver ? _driver.params : [];
+          //fill default values
+          vm.device.params = vm.device.params || {};
+          _.each(vm.params, function(value) {
+            if (value.default && !vm.device.params[value.name]) vm.device.params[value.name] = value.default;
+          });
         } else if (!driver) {
           vm.params = [];
         }

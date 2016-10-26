@@ -1,0 +1,29 @@
+<!-- The wsdisplay view -->
+<section class="container">
+  <div class="page-header">
+    <h1>Monitor</h1>
+  </div>
+  <!-- The message form -->
+  <ul class="list-unstyled">
+    <!-- List all messages -->
+    <li class="col-xs-12 wsdisplay-message" ng-repeat="message in vm.messages">
+      <small class="pull-right text-muted" ng-bind="message.created | date:'mediumTime'"></small>
+      <img ng-src="{{message.profileImageURL}}" alt="{{message.username}}" class="pull-left wsdisplay-profile-image" />
+      <div class="pull-left wsdisplay-message-details">
+        <strong ng-bind="message.username"></strong>
+        <br>
+        <span ng-bind="message.text"></span>
+      </div>
+    </li>
+  </ul>
+  <form class="col-xs-12" ng-submit="vm.sendCommand();">
+    <fieldset class="row">
+      <div class="input-group">
+        <input type="text" id="command" name="commandText" class="form-control" ng-model="vm.commandText" placeholder="Send command">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary" ng-disabled="!vm.commandText.length">Send</button>
+        </span>
+      </div>
+    </fieldset>
+  </form>
+</section>

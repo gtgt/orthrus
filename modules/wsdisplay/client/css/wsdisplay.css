@@ -1,0 +1,15 @@
+.wsdisplay-message {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+.wsdisplay-message:not(:last-child) {
+  border-bottom: 1px solid #e7e7e7;
+}
+.wsdisplay-message-details {
+  margin-left: 10px;
+}
+.wsdisplay-profile-image {
+  border-radius: 50%;
+  height: 28px;
+  width: 28px;
+}

@@ -8,7 +8,8 @@ var _ = require('lodash'),
   mongoose = require('mongoose'),
   Device = mongoose.model('Device'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
-  drivers = require(path.resolve('./drivers'));
+  drivers = require(path.resolve('./drivers')),
+  dispatcher = require('../dispatcher');
 
 exports.driver = {};
 
@@ -29,12 +30,13 @@ exports.kind = function (req, res, next, name) {
  * Device middleware
  */
 exports.driver.byName = function (req, res, next, name) {
-  if (!drivers[name]) {
+  var driver = _.find(drivers, {name: name});
+  if (!driver) {
     return res.status(400).send({
       message: 'Invalid driver name.'
     });
   }
-  req.driver = drivers[name];
+  req.driver = driver;
   next();
 };
 
@@ -46,13 +48,16 @@ exports.driver.read = function (req, res) {
  * List of Device drivers
  */
 exports.driver.list = function (req, res) {
-  var _drivers = _.map(_.pickBy(drivers, function(value, key) {
+  var _drivers = _.map(_.filter(drivers, function(value) {
     return value.kind && value.name;
   }), function(driver) {
-    var _driver = _.pickBy(driver, function(value) {
-      return !_.isFunction(value);
+    var _driver = _.pickBy(driver, function(value, key) {
+      return !_.isFunction(value) && (key != 'params');
     });
-    _driver.params = _.map(_driver.params, function(param, name) {
+    _driver.params = _.map(_.pickBy(driver.params.paths, function(value, key) {
+      return (key.substr(0, 1) != '_');
+    }), function(path, name) {
+      var param = path.options;
       param.name = name;
       return param;
     });
@@ -113,6 +118,7 @@ exports.create = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      dispatcher.add(device);
       res.json(device);
     }
   });
@@ -123,6 +129,7 @@ exports.create = function (req, res) {
  */
 exports.update = function (req, res) {
   var device = req.device;
+  dispatcher.remove(device);
   Device.schema.eachPath(function(key) {
     if (_.has(req.body, key)) _.set(device, key, req.body[key]);
   });
@@ -133,6 +140,7 @@ exports.update = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      dispatcher.add(device);
       res.json(device);
     }
   });
@@ -150,6 +158,7 @@ exports.delete = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      dispatcher.remove(device);
       res.json(device);
     }
   });

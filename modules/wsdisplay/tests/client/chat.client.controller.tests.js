@@ -1,14 +1,14 @@
 /**
- * Chat client controller tests
+ * Wsdisplay client controller tests
  */
 (function () {
   'use strict';
 
-  describe('ChatController', function () {
+  describe('WsdisplayController', function () {
     // Initialize global variables
     var $scope,
       Socket,
-      ChatController,
+      WsdisplayController,
       $timeout,
       $state,
       Authentication;
@@ -28,7 +28,7 @@
       beforeEach(inject(function ($controller, $rootScope, _Socket_, _Authentication_, _$timeout_, _$state_) {
         Authentication.user = undefined;
         spyOn($state, 'go');
-        ChatController = $controller('ChatController as vm', {
+        WsdisplayController = $controller('WsdisplayController as vm', {
           $scope: $scope
         });
       }));
@@ -45,7 +45,7 @@
           roles: ['user']
         };
 
-        ChatController = $controller('ChatController as vm', {
+        WsdisplayController = $controller('WsdisplayController as vm', {
           $scope: $scope
         });
       }));
@@ -85,8 +85,8 @@
           $scope.$destroy();
         });
 
-        it('should remove chatMessage listener', function () {
-          expect(Socket.socket.cbs.chatMessage).toBeUndefined();
+        it('should remove wsdisplayMessage listener', function () {
+          expect(Socket.socket.cbs.wsdisplayMessage).toBeUndefined();
         });
       });
     });

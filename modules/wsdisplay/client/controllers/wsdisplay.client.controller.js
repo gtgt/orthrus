@@ -2,17 +2,17 @@
   'use strict';
 
   angular
-    .module('chat')
-    .controller('ChatController', ChatController);
+    .module('wsdisplay')
+    .controller('WsdisplayController', WsdisplayController);
 
-  ChatController.$inject = ['$scope', '$state', 'Authentication', 'Socket'];
+  WsdisplayController.$inject = ['$scope', '$state', 'Authentication', 'Socket'];
 
-  function ChatController($scope, $state, Authentication, Socket) {
+  function WsdisplayController($scope, $state, Authentication, Socket) {
     var vm = this;
 
     vm.messages = [];
-    vm.messageText = '';
-    vm.sendMessage = sendMessage;
+    vm.commandText = '';
+    vm.sendCommand = sendCommand;
 
     init();
 
@@ -27,29 +27,29 @@
         Socket.connect();
       }
 
-      // Add an event listener to the 'chatMessage' event
-      Socket.on('chatMessage', function (message) {
+      // Add an event listener to the 'display' event
+      Socket.on('display', function (message) {
         vm.messages.unshift(message);
       });
 
       // Remove the event listener when the controller instance is destroyed
       $scope.$on('$destroy', function () {
-        Socket.removeListener('chatMessage');
+        Socket.removeListener('display');
       });
     }
 
     // Create a controller method for sending messages
-    function sendMessage() {
+    function sendCommand() {
       // Create a new message object
       var message = {
-        text: vm.messageText
+        text: vm.commandText
       };
 
-      // Emit a 'chatMessage' message event
-      Socket.emit('chatMessage', message);
+      // Emit a 'display' message event
+      Socket.emit('display', message);
 
       // Clear the message text
-      vm.messageText = '';
+      vm.commandText = '';
     }
   }
 }());

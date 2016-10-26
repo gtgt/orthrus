@@ -25,7 +25,7 @@
             <option value="display">Display (lcd, led, buzzer)</option>
           </select>
         </div>
-        <div class="form-group" ng-if="vm.device.kind" ng-if="vm.drivers">
+        <div class="form-group" ng-if="vm.device.kind && vm.drivers">
           <label class="control-label" for="driver">Driver</label>
           <select name="driver" data-ng-model="vm.device.driver" id="driver" class="form-control" ng-if="vm.drivers">
             <option value=""></option>
@@ -36,7 +36,7 @@
           <div class="form-group" show-errors>
             <!--suppress XmlInvalidId -->
             <label class="control-label" for="{{param.name}}" ng-bind="param.label"></label>
-            <input name="{{param.name}}" type="text" ng-model="vm.device.params[param.name]" ng-id="title" class="form-control" placeholder="{{param.default}}" required>
+            <input name="{{param.name}}" type="text" ng-model="vm.device.params[param.name]" id="{{pram.title}}" class="form-control" ng-required="param.required">
             <div ng-if="param.required" ng-messages="vm.form.deviceForm[param.name].$error" role="alert">
               <p class="help-block error-text" ng-message="required" ng-bind="!_.isBool(param.required) ? param.required : 'This field is required.'"></p>
             </div>

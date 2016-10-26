@@ -2,21 +2,21 @@
   'use strict';
 
   angular
-    .module('chat.routes')
+    .module('wsdisplay.routes')
     .config(routeConfig);
 
   routeConfig.$inject = ['$stateProvider'];
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('chat', {
-        url: '/chat',
-        templateUrl: 'modules/chat/client/views/chat.client.view.html',
-        controller: 'ChatController',
+      .state('wsdisplay', {
+        url: '/wsdisplay',
+        templateUrl: 'modules/wsdisplay/client/views/wsdisplay.client.view.html',
+        controller: 'WsdisplayController',
         controllerAs: 'vm',
         data: {
           roles: ['user', 'admin'],
-          pageTitle: 'Chat'
+          pageTitle: 'Wsdisplay'
         }
       });
   }

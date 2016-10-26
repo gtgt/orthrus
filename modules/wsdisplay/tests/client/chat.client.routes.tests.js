@@ -1,7 +1,7 @@
 ﻿(function () {
   'use strict';
 
-  describe('Chat Route Tests', function () {
+  describe('Wsdisplay Route Tests', function () {
     // Initialize global variables
     var $scope,
       Authentication;
@@ -22,11 +22,11 @@
       describe('Main Route', function () {
         var mainstate;
         beforeEach(inject(function ($state) {
-          mainstate = $state.get('chat');
+          mainstate = $state.get('wsdisplay');
         }));
 
         it('Should have the correct URL', function () {
-          expect(mainstate.url).toEqual('/chat');
+          expect(mainstate.url).toEqual('/wsdisplay');
         });
 
         it('Should not be abstract', function () {
@@ -34,7 +34,7 @@
         });
 
         it('Should have templateUrl', function () {
-          expect(mainstate.templateUrl).toBe('modules/chat/client/views/chat.client.view.html');
+          expect(mainstate.templateUrl).toBe('modules/wsdisplay/client/views/wsdisplay.client.view.html');
         });
       });
 
@@ -45,16 +45,16 @@
             roles: ['user']
           };
 
-          $state.go('chat');
+          $state.go('wsdisplay');
           $rootScope.$digest();
         }));
 
         it('Should remove trailing slash', inject(function ($state, $location, $rootScope) {
-          $location.path('chat/');
+          $location.path('wsdisplay/');
           $rootScope.$digest();
 
-          expect($location.path()).toBe('/chat');
-          expect($state.current.templateUrl).toBe('modules/chat/client/views/chat.client.view.html');
+          expect($location.path()).toBe('/wsdisplay');
+          expect($state.current.templateUrl).toBe('modules/wsdisplay/client/views/wsdisplay.client.view.html');
         }));
       });
 
